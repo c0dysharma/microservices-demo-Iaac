@@ -15,5 +15,16 @@ module "my-vpc" {
     Terraform = "true"
     Environment = var.env
     Name = "${var.env}-vpc"
+    "kubernetes.io/cluster/myapp-cluster" = "shared"
+  }
+  
+  public_subnet_tags = {
+    "kubernetes.io/cluster/myapp-cluster" = "shared"
+    "kubernetes.io/role/elb"              = "1"
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/myapp-cluster" = "shared"
+    "kubernetes.io/role/internal-elb"     = "1"
   }
 }
