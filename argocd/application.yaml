@@ -1,0 +1,110 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: microservices-demo-k8s-argo-application
+  namespace: argocd
+spec:
+  project: default
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
+  sources:
+    - repoURL: https://github.com/c0dysharma/microservice-demo-k8s
+      targetRevision: HEAD
+      path: charts/redis
+      helm:
+        releaseName: rediscart
+        valueFiles:
+          - ../../values/redis-values.yaml
+        values: |
+          appReplicas: "1"
+          volumeName: "redis-cart-data"
+    
+    - repoURL: https://github.com/c0dysharma/microservice-demo-k8s
+      targetRevision: HEAD
+      path: charts/microservice
+      helm:
+        releaseName: emailservice
+        valueFiles:
+          - ../../values/email-service-values.yaml
+    
+    - repoURL: https://github.com/c0dysharma/microservice-demo-k8s
+      targetRevision: HEAD
+      path: charts/microservice
+      helm:
+        releaseName: cartservice
+        valueFiles:
+          - ../../values/cart-service-values.yaml
+    
+    - repoURL: https://github.com/c0dysharma/microservice-demo-k8s
+      targetRevision: HEAD
+      path: charts/microservice
+      helm:
+        releaseName: currencyservice
+        valueFiles:
+          - ../../values/currency-service-values.yaml
+    
+    - repoURL: https://github.com/c0dysharma/microservice-demo-k8s
+      targetRevision: HEAD
+      path: charts/microservice
+      helm:
+        releaseName: paymentservice
+        valueFiles:
+          - ../../values/payment-service-values.yaml
+    
+    - repoURL: https://github.com/c0dysharma/microservice-demo-k8s
+      targetRevision: HEAD
+      path: charts/microservice
+      helm:
+        releaseName: recommendationservice
+        valueFiles:
+          - ../../values/recommendation-service-values.yaml
+    
+    - repoURL: https://github.com/c0dysharma/microservice-demo-k8s
+      targetRevision: HEAD
+      path: charts/microservice
+      helm:
+        releaseName: productcatalogservice
+        valueFiles:
+          - ../../values/productcatalog-service-values.yaml
+    
+    - repoURL: https://github.com/c0dysharma/microservice-demo-k8s
+      targetRevision: HEAD
+      path: charts/microservice
+      helm:
+        releaseName: shippingservice
+        valueFiles:
+          - ../../values/shipping-service-values.yaml
+    
+    - repoURL: https://github.com/c0dysharma/microservice-demo-k8s
+      targetRevision: HEAD
+      path: charts/microservice
+      helm:
+        releaseName: adservice
+        valueFiles:
+          - ../../values/ad-service-values.yaml
+    
+    - repoURL: https://github.com/c0dysharma/microservice-demo-k8s
+      targetRevision: HEAD
+      path: charts/microservice
+      helm:
+        releaseName: checkoutservice
+        valueFiles:
+          - ../../values/checkout-service-values.yaml
+    
+    - repoURL: https://github.com/c0dysharma/microservice-demo-k8s
+      targetRevision: HEAD
+      path: charts/microservice
+      helm:
+        releaseName: frontendservice
+        valueFiles:
+          - ../../values/frontend-values.yaml
+  
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: default
