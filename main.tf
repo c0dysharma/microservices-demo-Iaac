@@ -1,6 +1,4 @@
-provider "aws" {
-  region = "ap-south-1"
-}
+provider "aws" {}
 
 module "my-vpc" {
   source = "./modules/vpc"
