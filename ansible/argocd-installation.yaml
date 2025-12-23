@@ -1,0 +1,34 @@
+---
+- name : Deploy ArgoCD
+  hosts: localhost
+  tasks:
+    - name : Create a k8s namespace
+      kubernetes.core.k8s:
+        name: argocd
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: Deploy argocd application
+      kubernetes.core.k8s:
+        src: https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+        state: present
+        namespace: argocd
+        wait: true
+
+    - name: Change argocd-server service to LoadBalancer
+      kubernetes.core.k8s:
+        api_version: v1
+        kind: Service
+        name: argocd-server
+        namespace: argocd
+        state: present
+        definition:
+          spec:
+            type: LoadBalancer
+
+    - name: Deploy Application using argocd
+      kubernetes.core.k8s:
+        src: ../argocd/application.yaml
+        state: present
+        namespace: default
